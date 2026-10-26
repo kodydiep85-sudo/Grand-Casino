@@ -1,0 +1,10 @@
+# Render Blueprint: New -> Blueprint -> pick this repo. Free plan works (sleeps after 15 idle minutes).
+services:
+  - type: web
+    name: grand-squeeze-baccarat
+    runtime: node
+    plan: free
+    buildCommand: echo "nothing to build"
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true

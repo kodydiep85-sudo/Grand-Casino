@@ -1,0 +1,8 @@
+{
+  "name": "grand-squeeze-baccarat-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Grand Squeeze Baccarat website with friends' tables. Virtual chips only. No dependencies.",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#140608">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Grand Squeeze Casino</title>
+<meta name="description" content="Pick a game: Grand Squeeze Baccarat or Ultimate Texas Hold'em. Virtual chips only.">
+<meta property="og:title" content="Grand Squeeze Casino">
+<meta property="og:description" content="Squeeze baccarat with friends, or play Ultimate Texas Hold'em against the dealer. Free, virtual chips only.">
+<meta property="og:image" content="icon-512.png">
+<style>
+:root{--gold:#f0c64e;--cream:#fff8e9}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;min-height:100vh;color:var(--cream);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background-color:#2a070b;
+ background-image:radial-gradient(ellipse at 50% 0,#5a1018 0,#2a070b 45%,#0b0204 100%);
+ padding:max(20px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:22px}
+header{text-align:center;display:grid;gap:4px;padding-top:10px}
+h1{margin:0;font:italic 700 clamp(34px,7vw,58px) 'Brush Script MT','Segoe Script',Georgia,cursive;color:#fff;text-shadow:0 3px 10px #000}
+.sub{font:700 clamp(10px,1.6vw,13px) Georgia,serif;letter-spacing:.5em;color:var(--gold)}
+.wallet{justify-self:center;display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;padding:10px 16px;border-radius:14px;background:#000a;border:1px solid #c9a24a66;margin-top:10px}
+.wallet label{font:700 .72rem Georgia,serif;letter-spacing:.18em;color:var(--gold)}
+.wallet input{width:150px;padding:8px 10px;border-radius:9px;border:1px solid #6a4a50;background:#120a0c;color:#fff;font:600 .95rem system-ui}
+.wallet b{font:800 1.3rem system-ui;color:#9cf0b8;font-variant-numeric:tabular-nums}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px}
+.game{position:relative;display:grid;grid-template-rows:auto 1fr auto;border-radius:22px;overflow:hidden;text-decoration:none;color:inherit;
+ background:linear-gradient(#1c1c21,#0a0a0c);border:1px solid #c9a24a;box-shadow:0 18px 40px #000c;transition:transform .18s,box-shadow .18s}
+.game:hover{transform:translateY(-3px);box-shadow:0 0 0 2px var(--gold),0 24px 48px #000d}
+.game:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.art{position:relative;height:190px;overflow:hidden;border-bottom:1px solid #c9a24a88}
+.art.bac{background:radial-gradient(ellipse at 50% 20%,#d42433,#8a0d17 60%,#4a0509)}
+.art.uth{background:radial-gradient(ellipse at 50% 20%,#17845a,#0d5c3c 60%,#05301f)}
+.art::after{content:"";position:absolute;inset:10px;border-radius:14px;border:1px dashed #ffffff30}
+/* a few cards fanned on the felt */
+.fan{position:absolute;left:50%;top:52%;width:0;height:0}
+.c{position:absolute;width:62px;height:88px;margin:-44px 0 0 -31px;border-radius:7px;background:#fff;box-shadow:0 6px 12px #0009;color:#111;
+ font:700 18px/1 Georgia,serif;padding:6px 0 0 7px}
+.c.r{color:#c8102e}.c i{position:absolute;right:8px;bottom:8px;font-style:normal;font-size:30px}
+.c.back{background:#fff;padding:5px}.c.back::before{content:"";display:block;width:100%;height:100%;border-radius:4px;
+ background:repeating-linear-gradient(45deg,#1c4f86 0 3px,#f4f6ff 3px 4.2px),repeating-linear-gradient(-45deg,#1c4f86 0 3px,#f4f6ff 3px 4.2px);background-blend-mode:multiply}
+.c.bend{clip-path:polygon(0 0,100% 0,100% 62%,62% 100%,0 100%)}
+.peel{position:absolute;width:40px;height:40px;right:-1px;bottom:-1px;background:linear-gradient(135deg,#fff 50%,#d8d0bc 50%,#fffaf0);border-radius:0 0 7px 0;box-shadow:-3px -3px 6px #0004}
+.tag{position:absolute;left:14px;top:14px;z-index:2;padding:4px 10px;border-radius:99px;background:#000b;border:1px solid #c9a24a99;font:700 .68rem Georgia,serif;letter-spacing:.16em;color:var(--gold)}
+.body{padding:16px 18px 6px;display:grid;gap:6px}
+.body h2{margin:0;font:700 1.35rem Georgia,serif;color:#fff}
+.body p{margin:0;color:#d9c9b0;font-size:.93rem;line-height:1.5}
+.facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.facts span{padding:3px 9px;border-radius:99px;background:#ffffff12;font-size:.74rem;color:#f0e2c0}
+.play{margin:14px 18px 18px;padding:13px;border-radius:11px;text-align:center;font:700 .95rem Georgia,serif;letter-spacing:.14em;text-transform:uppercase;color:#fff;
+ background:linear-gradient(#ea3a48,#a3121f);border:1px solid #ff8a92;box-shadow:0 0 14px #e23a4855}
+.art.tcp{background:radial-gradient(ellipse at 50% 20%,#2b8a62,#0b4a33 60%,#03200f)}
+.game.tcpg .play{background:linear-gradient(#e9c46a,#a8792a);border-color:#fff0b8;color:#241600;box-shadow:0 0 14px #e9c46a55}
+.art.bj{background:radial-gradient(ellipse at 50% 20%,#2a5a8f,#14365e 60%,#08172a)}
+.game.bjg .play{background:linear-gradient(#3a6fae,#173e6a);border-color:#9cc4ff;box-shadow:0 0 14px #3a6fae55}
+.art.pg{background:radial-gradient(ellipse at 50% 20%,#7a3aa0,#3b1650 60%,#14061e)}
+.game.pgg .play{background:linear-gradient(#8a4ab4,#4a1d6a);border-color:#d7b4ff;box-shadow:0 0 14px #8a4ab455}
+.c.jk{color:#7a1fa8;background:linear-gradient(160deg,#fff3c4,#f3d27a)}
+.game.uthg .play{background:linear-gradient(#24a06e,#0f5c3c);border-color:#7fe0b0;box-shadow:0 0 14px #2fb57755}
+footer{text-align:center;font-size:.76rem;color:#b39a9e;line-height:1.6}
+footer a{color:#c9a24a}
+@media(prefers-reduced-motion:reduce){.game{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header>
+  <h1>Grand Squeeze</h1>
+  <div class="sub">♠ CASINO ♠</div>
+  <div class="wallet">
+   <label for="nameIn">PLAYING AS</label><input id="nameIn" maxlength="14" placeholder="Player" autocomplete="nickname">
+   <label>CHIPS</label><b id="chips">$5,000</b>
+  </div>
+ </header>
+ <div class="games">
+  <a class="game" href="baccarat.html">
+   <div class="art bac" aria-hidden="true"><span class="tag">SOLO · FRIENDS</span>
+    <div class="fan">
+     <div class="c back" style="transform:translate(-58px,6px) rotate(-14deg)"></div>
+     <div class="c r" style="transform:translate(0,-4px) rotate(-2deg)">9<i>♥</i></div>
+     <div class="c back bend" style="transform:translate(58px,6px) rotate(12deg)"><span class="peel"></span></div>
+    </div></div>
+   <div class="body">
+    <h2>Grand Squeeze Baccarat</h2>
+    <p>Squeeze your cards open one by one, bet Player or Banker with no commission, and chase Panda 8 and Dragon 7.</p>
+    <div class="facts"><span>Friends' tables</span><span>5 tables up to $1T</span><span>Roadmap</span></div>
+   </div>
+   <span class="play">Play baccarat</span>
+  </a>
+  <a class="game uthg" href="holdem.html">
+   <div class="art uth" aria-hidden="true"><span class="tag">SOLO · UP TO 5 FRIENDS</span>
+    <div class="fan">
+     <div class="c" style="transform:translate(-78px,8px) rotate(-10deg)">A<i>♠</i></div>
+     <div class="c r" style="transform:translate(-30px,-2px) rotate(-3deg)">A<i>♦</i></div>
+     <div class="c" style="transform:translate(26px,-6px) rotate(3deg)">K<i>♣</i></div>
+     <div class="c r" style="transform:translate(74px,4px) rotate(10deg)">K<i>♥</i></div>
+    </div></div>
+   <div class="body">
+    <h2>Ultimate Texas Hold'em</h2>
+    <p>Up to 5 players against one dealer. Beat the dealer's best five-card hand: raise 4× before the flop, 2× on the flop or 1× on the river, and take a shot at Trips.</p>
+    <div class="facts"><span>5 seats · friends' tables</span><span>Trips · Pair Bonus</span><span>Progressive jackpot</span></div>
+   </div>
+   <span class="play">Play hold'em</span>
+  </a>
+  <a class="game tcpg" href="tcp.html">
+   <div class="art tcp" aria-hidden="true"><span class="tag">SOLO · UP TO 5 FRIENDS</span>
+    <div class="fan">
+     <div class="c" style="transform:translate(-62px,8px) rotate(-12deg)">Q<i>♠</i></div>
+     <div class="c" style="transform:translate(0,-6px)">K<i>♠</i></div>
+     <div class="c" style="transform:translate(62px,8px) rotate(12deg)">A<i>♠</i></div>
+    </div></div>
+   <div class="body">
+    <h2>Three Card Poker</h2>
+    <p>Three cards each against the dealer. Play or fold, then take a shot at Pair Plus and the 6-Card Bonus, paying up to 1000 to 1.</p>
+    <div class="facts"><span>Pair Plus</span><span>Ante Bonus</span><span>6-Card Bonus</span></div>
+   </div>
+   <span class="play">Play poker</span>
+  </a>
+  <a class="game bjg" href="bj.html">
+   <div class="art bj" aria-hidden="true"><span class="tag">SOLO · UP TO 5 FRIENDS</span>
+    <div class="fan">
+     <div class="c" style="transform:translate(-34px,4px) rotate(-8deg)">A<i>♠</i></div>
+     <div class="c r" style="transform:translate(34px,-2px) rotate(7deg)">K<i>♥</i></div>
+    </div></div>
+   <div class="body">
+    <h2>Blackjack</h2>
+    <p>Beat the dealer to 21 from a 6-deck or double-deck shoe. Blackjack pays 3 to 2, with the Pair Bonus and a Bust Bonus you can bet once the dealer's card is showing.</p>
+    <div class="facts"><span>6 deck · double deck</span><span>Pair Bonus</span><span>Bust Bonus</span></div>
+   </div>
+   <span class="play">Play blackjack</span>
+  </a>
+  <a class="game pgg" href="pg.html">
+   <div class="art pg" aria-hidden="true"><span class="tag">SOLO · UP TO 5 FRIENDS</span>
+    <div class="fan">
+     <div class="c" style="transform:translate(-80px,10px) rotate(-14deg)">A<i>♠</i></div>
+     <div class="c r" style="transform:translate(-40px,0) rotate(-7deg)">A<i>♦</i></div>
+     <div class="c" style="transform:translate(0,-4px)">K<i>♣</i></div>
+     <div class="c r" style="transform:translate(40px,0) rotate(7deg)">K<i>♥</i></div>
+     <div class="c jk" style="transform:translate(80px,10px) rotate(14deg)">★<i>J</i></div>
+    </div></div>
+   <div class="body">
+    <h2>Face Up Pai Gow</h2>
+    <p>Seven cards, set into a high hand and a low hand, against the dealer's hand dealt face up. No commission, a Help button that sets your best hand, and a progressive jackpot.</p>
+    <div class="facts"><span>Bonus</span><span>Ace High</span><span>Progressive jackpot</span></div>
+   </div>
+   <span class="play">Play pai gow</span>
+  </a>
+ </div>
+ <footer>Your chips are shared between all the games on this device.<br>For entertainment only. Virtual chips have no cash value and can't be bought, sold or redeemed. 18+. <a href="privacy.html">Privacy</a></footer>
+</div>
+<script>
+(()=>{
+ const slug=n=>String(n||'Player').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,20)||'player';
+ const get=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+ const fmt=n=>{const a=Math.abs(n);return a>=1e12?'$'+(+(a/1e12).toFixed(2))+'T':a>=1e9?'$'+(+(a/1e9).toFixed(2))+'B':'$'+Math.floor(a).toLocaleString('en-US')};
+ const inp=document.getElementById('nameIn');
+ let name=(()=>{try{return sessionStorage.getItem('gs.me')||localStorage.getItem('gs.name')||'Player'}catch(e){return 'Player'}})();
+ inp.value=name==='Player'?'':name;
+ function show(){const s=slug(name),w=get('gs.wallet@'+s),st=get('gs.start@'+s)||get('gs.lastStart'),n=Number(w);
+  document.getElementById('chips').textContent=fmt(w!==null&&Number.isFinite(n)?n:(Number(st)>=100?Number(st):5000))}
+ inp.addEventListener('input',()=>{name=inp.value.trim().slice(0,14)||'Player';try{sessionStorage.setItem('gs.me',name);localStorage.setItem('gs.name',name)}catch(e){}show()});
+ show();addEventListener('pageshow',show);
+ if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+</body>
+</html>

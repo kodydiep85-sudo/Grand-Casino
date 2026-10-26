@@ -1,0 +1,33 @@
+{
+  "name": "Grand Squeeze Casino",
+  "short_name": "Grand Squeeze",
+  "description": "Squeeze baccarat with friends and Ultimate Texas Hold'em. Virtual chips only — no real money.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#140608",
+  "theme_color": "#140608",
+  "categories": [
+    "games",
+    "entertainment"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

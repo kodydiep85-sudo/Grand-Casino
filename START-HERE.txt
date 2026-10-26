@@ -1,0 +1,21 @@
+GRAND SQUEEZE CASINO - WEBSITE FILES
+
+1. GitHub: open your repository > Add file > Upload files.
+   Select ALL the files in this folder (not the folder itself), drag them in, click Commit changes.
+2. Render: New > Blueprint > pick the repository > Apply.
+   (Already made a service? Settings > Start Command = node server.js, then Manual Deploy > Deploy latest commit.)
+3. Wait for "Live", then open your .onrender.com address and play.
+
+There are no folders and nothing to install. The server is server.js.
+
+The home page (index.html) lets players pick a game:
+  baccarat.html  Grand Squeeze Baccarat (solo + friends' tables)
+  holdem.html    Ultimate Texas Hold'em (solo, or up to 5 friends with a table code)
+  holdem-core.js the hold'em dealer (needed for friends' tables)
+  tcp.html       Three Card Poker (solo, or up to 5 friends with a table code)
+  tcp-core.js    the three card poker dealer (needed for friends' tables)
+  bj.html        Blackjack, 6-deck or double deck (solo, or up to 5 friends with a table code)
+  bj-core.js     the blackjack dealer (needed for friends' tables)
+  pg.html        Face Up Pai Gow (solo, or up to 5 friends with a table code)
+  pg-core.js     the pai gow dealer (needed for friends' tables)
+Chips are shared between the games.

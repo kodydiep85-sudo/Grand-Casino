@@ -1,21 +1,22 @@
-GRAND SQUEEZE CASINO - WEBSITE FILES
+GRAND SQUEEZE CASINO - WEBSITE FILES (22 files, no folders)
 
+PUT IT ONLINE
 1. GitHub: open your repository > Add file > Upload files.
    Select ALL the files in this folder (not the folder itself), drag them in, click Commit changes.
-2. Render: New > Blueprint > pick the repository > Apply.
-   (Already made a service? Settings > Start Command = node server.js, then Manual Deploy > Deploy latest commit.)
-3. Wait for "Live", then open your .onrender.com address and play.
+   If GitHub says some files failed: upload just those files again (smaller batches are fine).
+2. Render redeploys by itself a minute or two after you commit.
+   (First time? Render: New > Web Service > pick the repository. Start Command: node server.js)
+3. CHECK IT: open  your-site.onrender.com/check
+   It lists every file the site needs with a tick or a cross. Any cross: upload that file again.
 
-There are no folders and nothing to install. The server is server.js.
-
-The home page (index.html) lets players pick a game:
-  baccarat.html  Grand Squeeze Baccarat (solo + friends' tables)
-  holdem.html    Ultimate Texas Hold'em (solo, or up to 5 friends with a table code)
-  holdem-core.js the hold'em dealer (needed for friends' tables)
-  tcp.html       Three Card Poker (solo, or up to 5 friends with a table code)
-  tcp-core.js    the three card poker dealer (needed for friends' tables)
-  bj.html        Blackjack, 6-deck or double deck (solo, or up to 5 friends with a table code)
-  bj-core.js     the blackjack dealer (needed for friends' tables)
-  pg.html        Face Up Pai Gow (solo, or up to 5 friends with a table code)
-  pg-core.js     the pai gow dealer (needed for friends' tables)
-Chips are shared between the games.
+THE FILES
+  index.html            the game menu
+  baccarat.html         Grand Squeeze Baccarat      table-core.js   its dealer (friends' tables)
+  holdem.html           Ultimate Texas Hold'em      holdem-core.js  its dealer
+  tcp.html              Three Card Poker            tcp-core.js     its dealer
+  bj.html               Blackjack                   bj-core.js      its dealer
+  pg.html               Face Up Pai Gow             pg-core.js      its dealer
+  server.js             the website server (Render runs this)
+  package.json, render.yaml   settings for Render
+  sw.js, manifest.webmanifest, privacy.html, icon-192.png, icon-512.png, icon-maskable-512.png, apple-touch-icon.png
+Chips are shared between all the games.

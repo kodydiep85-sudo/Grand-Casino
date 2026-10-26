@@ -1,5 +1,5 @@
-// Grand Squeeze Baccarat — multiplayer table server for the store apps.
-// The dealer itself lives in www/table-core.js (shared with the browser host).
+// Grand Squeeze Casino — the website and the friends' tables for every game.
+// Each game's dealer lives in its own *-core.js file (shared with the browser for solo play).
 'use strict';
 const http = require('http');
 const fs = require('fs');
@@ -7,11 +7,12 @@ const path = require('path');
 const crypto = require('crypto');
 const { EventEmitter } = require('events');
 // find the game files whether they sit in ../www (the full project), ./www, or right next to this file (a flat upload)
-const WWW = [path.join(__dirname, '..', 'www'), path.join(__dirname, 'www'), __dirname].find(d => fs.existsSync(path.join(d, 'index.html')) && fs.existsSync(path.join(d, 'table-core.js')));
-if (!WWW) { console.error('Could not find index.html and table-core.js. Upload the www folder (or those files) next to the server.'); process.exit(1); }
-const { handle, leave, drop } = require(path.join(WWW, 'table-core.js'));
+const WWW = [path.join(__dirname, '..', 'www'), path.join(__dirname, 'www'), __dirname].find(d => fs.existsSync(path.join(d, 'index.html'))) || __dirname;
+// each game's dealer is optional: if a file didn't upload, the rest of the site still runs (open /check to see what's missing)
+const load = f => { try { return require(path.join(WWW, f)); } catch (e) { console.warn(`${f} is missing or broken: ${e.message.split('\n')[0]}`); return null; } };
+const BAC = load('table-core.js');
 // Ultimate Texas Hold'em tables (up to 5 players each) — optional, so an older upload without the file still runs baccarat
-let UTH = null; try { UTH = require(path.join(WWW, 'holdem-core.js')); } catch (e) { console.warn('holdem-core.js not found: hold\'em friends\' tables are off.'); }
+const UTH = load('holdem-core.js');
 // the jackpots only grow: keep each in a small file so a restart picks up where it left off
 function keepJackpot(game, file) {
   if (!game || !game.jp) return;
@@ -82,6 +83,7 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
 const server = http.createServer((req, res) => {
   const url = decodeURIComponent((req.url || '/').split('?')[0]);
   if (url === '/health') { res.writeHead(200, { 'content-type': 'text/plain' }); return res.end('ok'); }
+  if (url === '/check') return check(res);
   let file = path.normalize(path.join(WWW, url === '/' ? 'index.html' : url));
   if (!file.startsWith(WWW) || /(^|[\\/])(server\.js|jackpot\.json|tcp-jackpot\.json|pg-jackpot\.json|package\.json|render\.yaml|Procfile|Dockerfile|fly\.toml)$/.test(file)) { res.writeHead(403); return res.end(); }
   fs.readFile(file, (err, data) => {
@@ -96,16 +98,35 @@ const game = (onMsg, onClose) => ws => {
   ws.on('message', raw => { if (raw.length > 4096) return; let m; try { m = JSON.parse(raw); } catch { return; } try { onMsg(ws, m); } catch (e) { console.error(e); } });
   ws.on('close', () => { try { onClose(ws); } catch (e) { console.error(e); } });
 };
-const routes = { '/ws': game(handle, ws => (drop || leave)(ws)) };   // baccarat: a dropped connection keeps the seat for a while
+const routes = {};
+if (BAC) routes['/ws'] = game(BAC.handle, ws => (BAC.drop || BAC.leave)(ws));   // baccarat: a dropped connection keeps the seat for a while
 if (UTH) routes['/uth'] = game(UTH.handle, UTH.leave);               // hold'em: your hand plays out, then your seat frees up
-let TCP = null; try { TCP = require(path.join(WWW, 'tcp-core.js')); } catch (e) { console.warn('tcp-core.js not found: three card poker friends\' tables are off.'); }
+const TCP = load('tcp-core.js');
 keepJackpot(TCP, 'tcp-jackpot.json');
 if (TCP) routes['/tcp'] = game(TCP.handle, TCP.leave);
-let BJ = null; try { BJ = require(path.join(WWW, 'bj-core.js')); } catch (e) { console.warn('bj-core.js not found: blackjack friends\' tables are off.'); }
+const BJ = load('bj-core.js');
 if (BJ) routes['/bj'] = game(BJ.handle, BJ.leave);                   // blackjack: up to 5 players, 6-deck or double deck
-let PG = null; try { PG = require(path.join(WWW, 'pg-core.js')); } catch (e) { console.warn('pg-core.js not found: pai gow friends\' tables are off.'); }
+const PG = load('pg-core.js');
 keepJackpot(PG, 'pg-jackpot.json');
 if (PG) routes['/pg'] = game(PG.handle, PG.leave);                   // face up pai gow: up to 5 players               // three card poker: same idea, up to 5 players a table
 const clients = acceptWebSockets(server, routes);
+// /check: a page listing every file the site needs, so a failed upload is easy to spot
+const NEEDED = [['index.html', 'Game menu'], ['baccarat.html', 'Baccarat'], ['table-core.js', 'Baccarat dealer (friends\' tables)'], ['holdem.html', "Texas Hold'em"], ['holdem-core.js', "Texas Hold'em dealer"],
+  ['tcp.html', 'Three Card Poker'], ['tcp-core.js', 'Three Card Poker dealer'], ['bj.html', 'Blackjack'], ['bj-core.js', 'Blackjack dealer'], ['pg.html', 'Face Up Pai Gow'], ['pg-core.js', 'Pai Gow dealer'],
+  ['sw.js', 'Offline helper'], ['manifest.webmanifest', 'App icon settings'], ['privacy.html', 'Privacy page'], ['icon-192.png', 'Icon'], ['icon-512.png', 'Icon'], ['icon-maskable-512.png', 'Icon'], ['apple-touch-icon.png', 'iPhone icon']];
+function check(res) {
+  const engines = { 'table-core.js': BAC, 'holdem-core.js': UTH, 'tcp-core.js': TCP, 'bj-core.js': BJ, 'pg-core.js': PG };
+  let miss = 0;
+  const rows = NEEDED.map(([f, what]) => {
+    const here = fs.existsSync(path.join(WWW, f)), broken = here && f in engines && !engines[f];
+    if (!here || broken) miss++;
+    return `<tr><td>${here && !broken ? '✅' : '❌'}</td><td><b>${f}</b></td><td>${what}</td><td>${!here ? 'missing — upload it to GitHub' : broken ? 'there, but it could not be loaded — upload it again' : 'OK'}</td></tr>`;
+  }).join('');
+  res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+  res.end(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Site check</title>
+<body style="font:15px system-ui;background:#111;color:#eee;padding:16px;max-width:720px;margin:auto"><h1 style="color:#f0c64e">${miss ? `❌ ${miss} file${miss > 1 ? 's' : ''} need attention` : '✅ Every file is here'}</h1>
+<table style="border-collapse:collapse;width:100%">${rows}</table><style>td{padding:6px 8px;border-bottom:1px solid #333}</style>
+<p style="color:#aaa">Files are read from: ${path.basename(WWW) || '/'} · <a style="color:#f0c64e" href="./">Back to the casino</a></p>`);
+}
 setInterval(() => { for (const ws of clients) { if (!ws.isAlive) { ws.terminate(); continue; } ws.isAlive = false; ws.ping(); } }, 30000);
 server.listen(PORT, '0.0.0.0', () => console.log(`Grand Squeeze Casino server on :${PORT}`));
